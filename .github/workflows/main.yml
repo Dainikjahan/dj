@@ -1,6 +1,5 @@
-# Dainik Jahan — 【entity-GitHub¦canonical_name=GitHub】 -> Cloudflare — Staging ONLY
+# Temporary deploy — GitHub -> Cloudflare
 # Target: https://dj-staging.ukaiacademy.org
-# Production dainikjahan.com BLOCKED
 name: main
 
 on:
@@ -26,7 +25,7 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Run DJ-3 tests
+      - name: Run tests
         run: npm test
 
   deploy:
@@ -52,21 +51,21 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 execute dainik-jahan-staging --file=migrations/0001_init.sql --remote
+          command: d1 execute dj-staging --file=migrations/0001_init.sql --remote
 
       - name: D1 Migrate 0002
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 execute dainik-jahan-staging --file=migrations/0002_indexes.sql --remote
+          command: d1 execute dj-staging --file=migrations/0002_indexes.sql --remote
 
       - name: D1 Migrate 0003
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 execute dainik-jahan-staging --file=migrations/0003_independence_nonces.sql --remote
+          command: d1 execute dj-staging --file=migrations/0003_independence_nonces.sql --remote
 
       - name: Deploy Worker to Staging
         uses: cloudflare/wrangler-action@v3
