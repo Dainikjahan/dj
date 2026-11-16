@@ -32,6 +32,6 @@ jobs:
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${ {cfat_Dtg5Ew9MiUfJfu3nxRY0F4XSY3SyJ6K17AJDZyYGd0f0e84b}}
-          accountId: ${ {4cfa321c5d0f183bff84773f58764d04}}
+          apiToken: ${{ secrets.CLOUDFARE_API_TOKEN }}
+          accountID: ${{ secrets.CLOUDFARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=YOUR_PROJECT_NAME
