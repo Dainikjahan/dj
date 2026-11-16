@@ -1,5 +1,3 @@
-# Temporary deploy — GitHub -> Cloudflare
-# Target: https://dj-staging.ukaiacademy.org
 name: main
 
 on:
@@ -12,61 +10,45 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node 22
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: package-lock.json
-
-      - name: Install
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
+      - run: npm ci
+      - run: npm test
 
   deploy:
     name: deploy
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node 22
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: package-lock.json
-
-      - name: Install
-        run: npm ci
-
+      - run: npm ci
       - name: D1 Migrate 0001
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: d1 execute dj-staging --file=migrations/0001_init.sql --remote
-
       - name: D1 Migrate 0002
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: d1 execute dj-staging --file=migrations/0002_indexes.sql --remote
-
       - name: D1 Migrate 0003
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: d1 execute dj-staging --file=migrations/0003_independence_nonces.sql --remote
-
       - name: Deploy Worker to Staging
         uses: cloudflare/wrangler-action@v3
         with:
